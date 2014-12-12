@@ -36,16 +36,18 @@
   $.fn.scrollPagination.loadContent = function(obj, opts){
 	 var target = opts.scrollTarget;
 	 var mayLoadContent = $(target).scrollTop()+opts.heightOffset >= $(document).height() - $(target).height();
-	 if (mayLoadContent){
+	 if (mayLoadContent && opts.lock){
 		 if (opts.beforeLoad != null){
 			opts.beforeLoad(); 
 		 }
+		 opts.lock = false ;
 		 $(obj).children().attr('rel', 'loaded');
 		 $.ajax({
 			  type: 'POST',
 			  url: opts.contentPage,
 			  data: opts.contentData,
 			  success: function(data){
+			  	opts.lock = true ;
 				$(obj).append(data); 
 				var objectsRendered = $(obj).children('[rel!=loaded]');
 				
@@ -82,6 +84,7 @@
 		 'beforeLoad': null,
 		 'afterLoad': null	,
 		 'scrollTarget': null,
-		 'heightOffset': 0		  
+		 'heightOffset': 0	,
+		 'lock': true	  
  };	
 })( jQuery );
